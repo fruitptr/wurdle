@@ -1,0 +1,28 @@
+h1 {
+    text-align: center;
+    font-size: 40px;
+}
+
+#tiles {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.row-box {
+    border: 2px solid black;
+    border-radius: 5px;
+    margin: 2px;
+    font-size: large;
+    font-weight: 700;
+    height: 75px;
+    width: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+.tiles-row {
+    display: flex;
+}
