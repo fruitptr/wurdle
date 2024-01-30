@@ -1,7 +1,29 @@
+body {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-weight: 300;
+}
+
 h1 {
     text-align: center;
-    font-size: 40px;
+    font-size: 4em;
 }
+
+#word {
+    text-align: center;
+    font-size: 2em;
+    margin: 3px;
+    height: 4rem;
+    width: 100%;
+}
+
+#word p {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+  
+#word p.show {
+   opacity: 1;
+}  
 
 #tiles {
     display: flex;
@@ -9,11 +31,16 @@ h1 {
     flex-direction: column;
 }
 
+.tiles-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
 .row-box {
     border: 2px solid black;
     border-radius: 5px;
     margin: 2px;
-    font-size: large;
+    font-size: 2.5em;
     font-weight: 700;
     height: 75px;
     width: 75px;
@@ -21,8 +48,21 @@ h1 {
     justify-content: center;
     align-items: center;
     text-transform: uppercase;
+    transition: background-color 0.25s linear, color 0.25s linear;
 }
 
-.tiles-row {
-    display: flex;
-}
+@keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(2px);
+    }
+  }
+  
+  .shake {
+    animation: shake 0.5s ease-in-out;
+  }

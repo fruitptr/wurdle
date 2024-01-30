@@ -4,38 +4,53 @@ let userWon = false
 let userGuesses = 0
 let userCurrentWord = ""
 let wordToGuess = "EARTH" //make sure the word is capitalized
+let wordLetterFreqDict = {}
 
 function initializeElements() {
     tilesElement = document.getElementById("tiles")
 
     for (let i = 0; i < ALLOWED_GUESSES; i++) {
         let row = document.createElement("div")
-        console.log("Row created")
+        // console.log("Row created")
         row.className = "tiles-row"
 
         for (let j=0; j < WORD_LENGTH; j++) {
             let box = document.createElement("div")
             box.className = "row-box"
+            box.style.transitionDelay = (WORD_LENGTH + j-4) * 0.25 + "s"
             row.appendChild(box)
         }
 
         tilesElement.appendChild(row)
     }
 
-    console.log(tilesElement)
+    for (let i=0;i<WORD_LENGTH;i++)
+    {
+        if (!(wordToGuess[i] in wordLetterFreqDict))
+        {
+            wordLetterFreqDict[wordToGuess[i]] = 1
+        }
+        else
+        {
+            wordLetterFreqDict[wordToGuess[i]] += 1
+        }
+    }
+
+    // console.log(tilesElement)
+    // console.log(wordLetterFreqDict)
 }
 
 function addLetter(letterASCII) {
-    console.log("Current word length: " + userCurrentWord.length)
-    console.log("Current word: " + userCurrentWord)
+    // console.log("Current word length: " + userCurrentWord.length)
+    // console.log("Current word: " + userCurrentWord)
     if (userCurrentWord.length < WORD_LENGTH)
     {
-        console.log("User guesses:" + userGuesses)
+        // console.log("User guesses:" + userGuesses)
         userCurrentWord += String.fromCharCode(letterASCII)
         let row = document.getElementsByClassName("tiles-row")[userGuesses]
         let box = row.children[userCurrentWord.length - 1]
         box.textContent = String.fromCharCode(letterASCII)
-        console.log(userCurrentWord)
+        // console.log(userCurrentWord)
     }
 }
 
@@ -46,7 +61,7 @@ function deleteLetter() {
         let row = document.getElementsByClassName("tiles-row")[userGuesses]
         let box = row.children[userCurrentWord.length]
         box.textContent = ""
-        console.log(userCurrentWord)
+        // console.log(userCurrentWord)
     }
 }
 
@@ -54,6 +69,9 @@ function checkGuess() {
     letterFreq = 0
     yellowFreq = 0
     sameLetterIndexes = []
+    var tempWordDict = {...wordLetterFreqDict};
+    let tempWord = wordToGuess;
+    wordElement = document.getElementById("word")
     if (userCurrentWord == wordToGuess)
     {
         for (let i = 0; i < WORD_LENGTH; i++)
@@ -63,56 +81,71 @@ function checkGuess() {
             box.style.backgroundColor = 'green'
             box.style.color = 'white'
         }
-        console.log("You won!")
+        let text = document.createElement("p")
+        text.textContent = "Congratulations! The word was: " + wordToGuess.toUpperCase()
+        requestAnimationFrame(() => {
+            // Add the smooth transition class to show the text element smoothly
+            text.classList.add("show");
+          });
+      
+          // Use requestAnimationFrame to ensure smooth transition
+          requestAnimationFrame(() => {
+            wordElement.appendChild(text);
+          });
         userWon = true
         userCurrentWord = ""
     }
     else
     {
-        for (let i = 0; i < WORD_LENGTH; i++)
+        for (let i = 0; i <WORD_LENGTH;i++)
         {
-            if (userCurrentWord[i] == wordToGuess[i])
+            firstInstanceIndex = tempWord.indexOf(userCurrentWord[i])
+            console.log("First instance: " + firstInstanceIndex)
+            if (firstInstanceIndex == -1)
             {
                 let row = document.getElementsByClassName("tiles-row")[userGuesses]
                 let box = row.children[i]
-                box.style.backgroundColor = 'green'
+                box.style.backgroundColor = '#6a6e68'
                 box.style.color = 'white'
             }
             else
             {
-                for (let j = 0; j < WORD_LENGTH; j++)
+                if (firstInstanceIndex == i && tempWordDict[userCurrentWord[i]] != 0)
                 {
                     let row = document.getElementsByClassName("tiles-row")[userGuesses]
                     let box = row.children[i]
-                    if (userCurrentWord[i] == wordToGuess[j] && box.style.backgroundColor != 'green') //fix this if.
-                    {
-                        letterFreq++
-                    }
-                    else
-                    {
-                        box.style.backgroundColor = 'grey'
-                        box.style.color = 'white'
-                    }
+                    box.style.backgroundColor = '#80cf5f'
+                    box.style.color = 'white'
+                    tempWordDict[userCurrentWord[i]] -= 1
                 }
-                console.log("Letter freq " + userCurrentWord[i] + ": " + letterFreq)
-                for (let j = 0; j < WORD_LENGTH; j++)
+                else
                 {
-                    if ((userCurrentWord[i] == wordToGuess[j]) && yellowFreq < letterFreq)
-                    {
-                        let row = document.getElementsByClassName("tiles-row")[userGuesses]
-                        let box = row.children[i]
-                        box.style.backgroundColor = 'yellow'
-                        box.style.color = 'white'
-                        yellowFreq++
-                    }
+                    let row = document.getElementsByClassName("tiles-row")[userGuesses]
+                    let box = row.children[i]
+                    box.style.backgroundColor = '#cfc25f'
+                    box.style.color = 'white'
                 }
-                yellowFreq = 0
-                letterFreq = 0
+                tempWord = tempWord.slice(0, firstInstanceIndex) + tempWord.slice(firstInstanceIndex + 1);
+                console.log("Temp word now: " + tempWord)
             }
         }
         userGuesses++
         userCurrentWord = ""
-        console.log("User guesses incremented.")
+
+        if (userGuesses >= 5)
+        {
+            let text = document.createElement("p")
+            text.textContent = "You lost! The word was: " + wordToGuess.toUpperCase()
+            requestAnimationFrame(() => {
+                // Add the smooth transition class to show the text element smoothly
+                text.classList.add("show");
+              });
+          
+              // Use requestAnimationFrame to ensure smooth transition
+              requestAnimationFrame(() => {
+                wordElement.appendChild(text);
+              });
+        }
     }
 }
 
@@ -129,7 +162,10 @@ function handleKey(event) {
     }
     else if (event.keyCode == 13 && userCurrentWord.length < WORD_LENGTH)
     {
-        //shakebox animation - enter full word
+        tilesElement.classList.add("shake");
+        setTimeout(() => {
+        tilesElement.classList.remove("shake");
+        }, 500);
         console.log("Enter full word.")
     }
     else if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122))
@@ -146,10 +182,30 @@ function handleKey(event) {
     }
     else
     {
-        //shakebox animation - only letters allowed
+        tilesElement.classList.add("shake");
+        setTimeout(() => {
+        tilesElement.classList.remove("shake");
+        }, 500);
         console.log("Letters allowed only.")
     }
 }
+
+const apiUrl = "https://random-word-api.herokuapp.com/word?length=5";
+
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log("JSON data:", data);
+    wordToGuess = data[0].toUpperCase()
+  })
+  .catch(error => {
+    console.error("Error fetching data:", error);
+  });
 
 initializeElements()
 document.addEventListener("keyup", handleKey)
