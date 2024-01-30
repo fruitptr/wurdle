@@ -5,12 +5,13 @@ body {
 
 h1 {
     text-align: center;
-    font-size: 4em;
+    font-size: 3em;
 }
 
 #word {
     text-align: center;
-    font-size: 2em;
+    font-size: 1.5em;
+    font-weight: 700;
     margin: 3px;
     height: 4rem;
     width: 100%;
@@ -37,13 +38,13 @@ h1 {
   }
 
 .row-box {
-    border: 2px solid black;
-    border-radius: 5px;
-    margin: 2px;
-    font-size: 2.5em;
+    border: 2px solid rgb(63, 63, 63);
+    border-radius: 3px;
+    margin: 1px;
+    font-size: 1.5em;
     font-weight: 700;
-    height: 75px;
-    width: 75px;
+    height: 50px;
+    width: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
