@@ -114,7 +114,7 @@ figure a {
     margin-right: 10px; /* Adjust the margin between the icon and text */
 }
 
-.weatherforcastbox img:hover {
+.weatherforcastbox:hover img {
     -webkit-filter: none;
     filter: none;
 }

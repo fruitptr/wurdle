@@ -3,7 +3,7 @@ const WORD_LENGTH = 5
 let userWon = false
 let userGuesses = 0
 let userCurrentWord = ""
-let wordToGuess = "EARTH" //make sure the word is capitalized
+let wordToGuess = "EARTH"
 let wordLetterFreqDict = {}
 let weatherData = null
 let weatherImage = null
@@ -297,7 +297,6 @@ function initializeElements() {
 
     for (let i = 0; i < ALLOWED_GUESSES; i++) {
         let row = document.createElement("div")
-        // console.log("Row created")
         row.className = "tiles-row"
 
         for (let j=0; j < WORD_LENGTH; j++) {
@@ -351,22 +350,15 @@ function initializeElements() {
     const iconElement = document.getElementById("weather-icon");
     const iconUrl = weatherImage;
     iconElement.src = iconUrl;
-
-    // console.log(tilesElement)
-    // console.log(wordLetterFreqDict)
 }
 
 function addLetter(letterASCII) {
-    // console.log("Current word length: " + userCurrentWord.length)
-    // console.log("Current word: " + userCurrentWord)
     if (userCurrentWord.length < WORD_LENGTH)
     {
-        // console.log("User guesses:" + userGuesses)
         userCurrentWord += String.fromCharCode(letterASCII)
         let row = document.getElementsByClassName("tiles-row")[userGuesses]
         let box = row.children[userCurrentWord.length - 1]
         box.textContent = String.fromCharCode(letterASCII)
-        // console.log(userCurrentWord)
     }
 }
 
@@ -377,76 +369,64 @@ function deleteLetter() {
         let row = document.getElementsByClassName("tiles-row")[userGuesses]
         let box = row.children[userCurrentWord.length]
         box.textContent = ""
-        // console.log(userCurrentWord)
     }
 }
 
 function checkGuess() {
-    letterFreq = 0
-    yellowFreq = 0
-    sameLetterIndexes = []
-    var tempWordDict = {...wordLetterFreqDict};
-    let tempWord = wordToGuess;
-    if (userCurrentWord == wordToGuess)
+    let colorIndexes = {0:"",1:"",2:"",3:"",4:""}
+    let remainingWord = wordToGuess
+    
+    for (let i = 0; i < WORD_LENGTH; i++)
     {
-        for (let i = 0; i < WORD_LENGTH; i++)
+        if (userCurrentWord[i] == wordToGuess[i])
+        {
+            remainingWord = remainingWord.replace(userCurrentWord[i], '');
+            let row = document.getElementsByClassName("tiles-row")[userGuesses]
+            let box = row.children[i]
+            box.style.backgroundColor = '#80cf5f'
+            box.style.color = 'white'
+        }
+        else
         {
             let row = document.getElementsByClassName("tiles-row")[userGuesses]
             let box = row.children[i]
-            box.style.backgroundColor = 'green'
+            box.style.backgroundColor = '#6a6e68'
             box.style.color = 'white'
         }
-        let text = document.createElement("p")
+    }
+
+    for (let i=0; i < WORD_LENGTH; i++)
+    {
+        if (remainingWord.includes(userCurrentWord[i]) && userCurrentWord[i] !== wordToGuess[i])
+        {
+            remainingWord = remainingWord.replace(userCurrentWord[i], '');
+            let row = document.getElementsByClassName("tiles-row")[userGuesses]
+            let box = row.children[i]
+            box.style.backgroundColor = '#cfc25f'
+            box.style.color = 'white'
+        }
+    }
+
+    if (userCurrentWord == wordToGuess)
+    {
+        let text = document.getElementById("word-p")
         text.textContent = "Congratulations! The word was: " + wordToGuess.toUpperCase()
         text.style.transition = "all 0.25s linear";
-        document.getElementById("word").appendChild(text);
         userWon = true
         userCurrentWord = ""
     }
     else
     {
-        for (let i = 0; i <WORD_LENGTH;i++)
-        {
-            firstInstanceIndex = tempWord.indexOf(userCurrentWord[i])
-            console.log("First instance: " + firstInstanceIndex)
-            if (firstInstanceIndex == -1)
-            {
-                let row = document.getElementsByClassName("tiles-row")[userGuesses]
-                let box = row.children[i]
-                box.style.backgroundColor = '#6a6e68'
-                box.style.color = 'white'
-            }
-            else
-            {
-                if (firstInstanceIndex == i && tempWordDict[userCurrentWord[i]] != 0)
-                {
-                    let row = document.getElementsByClassName("tiles-row")[userGuesses]
-                    let box = row.children[i]
-                    box.style.backgroundColor = '#80cf5f'
-                    box.style.color = 'white'
-                    tempWordDict[userCurrentWord[i]] -= 1
-                }
-                else
-                {
-                    let row = document.getElementsByClassName("tiles-row")[userGuesses]
-                    let box = row.children[i]
-                    box.style.backgroundColor = '#cfc25f'
-                    box.style.color = 'white'
-                }
-                tempWord = tempWord.slice(0, firstInstanceIndex) + tempWord.slice(firstInstanceIndex + 1);
-                console.log("Temp word now: " + tempWord)
-            }
-        }
-        userGuesses++
-        userCurrentWord = ""
-
         if (userGuesses >= 5)
         {
-            let text = document.createElement("p")
+            let text = document.getElementById("word-p")
             text.textContent = "You lost! The word was: " + wordToGuess.toUpperCase()
-            document.getElementById("word").appendChild(text);
+            text.style.transition = "all 0.25s linear";
         }
     }
+
+    userGuesses++
+    userCurrentWord = ""
 }
 
 function handleKey(event) {
@@ -525,7 +505,7 @@ fetch(apiUrl)
         console.log("JSON data:", data);
         console.log("word to guess: ", wordToGuess)
         hintsData = data;
-        initializeElements(); // Call initializeElements() after weather data is fetched
+        initializeElements();
         })
         .catch(error => {
         console.error("Error fetching data:", error);
