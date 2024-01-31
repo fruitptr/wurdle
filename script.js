@@ -398,7 +398,6 @@ function deleteLetter() {
 }
 
 function checkGuess() {
-    let colorIndexes = {0:"",1:"",2:"",3:"",4:""}
     let remainingWord = wordToGuess
     
     for (let i = 0; i < WORD_LENGTH; i++)
@@ -432,11 +431,19 @@ function checkGuess() {
         }
     }
 
+    userGuesses++
+
+    console.log("usercurrentword",userCurrentWord)
+    console.log("wordtoguess: ", wordToGuess)
     if (userCurrentWord == wordToGuess)
     {
         let text = document.getElementById("word-p")
-        text.textContent = "Congratulations! The word was: " + wordToGuess.toUpperCase()
-        text.style.transition = "all 0.25s linear";
+        text.innerHTML = "Congratulations! The word was: " + wordToGuess.toUpperCase()
+        text.style.opacity = 0
+            setTimeout(() => {
+                text.style.opacity = 1
+                text.style.transition = "all 0.25s linear";
+            }, 500);
         userWon = true
         userCurrentWord = ""
     }
@@ -445,13 +452,18 @@ function checkGuess() {
         if (userGuesses >= 5)
         {
             let text = document.getElementById("word-p")
-            text.textContent = "You lost! The word was: " + wordToGuess.toUpperCase()
-            text.style.transition = "all 0.25s linear";
+            text.innerHTML = "You lost! The word was: " + wordToGuess.toUpperCase()
+            text.style.opacity = 0
+            setTimeout(() => {
+                text.style.opacity = 1
+                text.style.transition = "all 0.25s linear";
+            }, 500);
         }
     }
 
-    userGuesses++
+    
     userCurrentWord = ""
+    
 }
 
 function handleKey(event) {
