@@ -294,31 +294,58 @@ let weatherCodes = {
 
 function initializeElements() {
     tilesElement = document.getElementById("tiles")
+    var isMobile;
 
-    for (let i = 0; i < ALLOWED_GUESSES; i++) {
-        let row = document.createElement("div")
-        row.className = "tiles-row"
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+            isMobile = true ;
+         } else {
+            isMobile = false ;
+         }
 
-        for (let j=0; j < WORD_LENGTH; j++) {
-            let box = document.createElement("div")
-            box.className = "row-box"
-            box.style.transitionDelay = (WORD_LENGTH + j-4) * 0.25 + "s"
-            row.appendChild(box)
-        }
-
-        tilesElement.appendChild(row)
-    }
-
-    for (let i=0;i<WORD_LENGTH;i++)
+    if (isMobile == false)
     {
-        if (!(wordToGuess[i] in wordLetterFreqDict))
-        {
-            wordLetterFreqDict[wordToGuess[i]] = 1
+        for (let i = 0; i < ALLOWED_GUESSES; i++) {
+            let row = document.createElement("div")
+            row.className = "tiles-row"
+    
+            for (let j=0; j < WORD_LENGTH; j++) {
+                let box = document.createElement("div")
+                box.className = "row-box"
+                box.style.transitionDelay = (WORD_LENGTH + j-4) * 0.25 + "s"
+                row.appendChild(box)
+            }
+    
+            tilesElement.appendChild(row)
         }
-        else
+    
+        for (let i=0;i<WORD_LENGTH;i++)
         {
-            wordLetterFreqDict[wordToGuess[i]] += 1
+            if (!(wordToGuess[i] in wordLetterFreqDict))
+            {
+                wordLetterFreqDict[wordToGuess[i]] = 1
+            }
+            else
+            {
+                wordLetterFreqDict[wordToGuess[i]] += 1
+            }
         }
+        let hint = hintsData[0]["word"]
+        document.getElementById("wurdle-hint").innerHTML = `Hint: ${hint}`;
+    }
+    else
+    {
+        columnHeading = document.getElementById("headline-hl5-wurdle");
+        columnHeading.textContent = "ADVERTISEMENT"
+        headingBelow = document.getElementById("wurdle-hint")
+        headingBelow.textContent = "Contact (555)-8008 to get your ad placed."
+        wurdleWrapperDiv = document.getElementsByClassName("wurdle-wrapper")[0]
+        refElement = document.createElement("a")
+        refElement.href = "https://forum.ls-rp.com/viewtopic.php?f=757&t=723527&sid=3c0e34430a6ac00ae28ba3664c18e862"
+        advertImage = document.createElement("img")
+        advertImage.src = "advert.png"
+        advertImage.style.border = "1px solid "
+        refElement.appendChild(advertImage)
+        wurdleWrapperDiv.appendChild(refElement)
     }
 
     const nth = (d) => {
@@ -331,8 +358,6 @@ function initializeElements() {
         }
       };
 
-    let hint = hintsData[0]["word"]
-    document.getElementById("wurdle-hint").innerHTML = `Hint: ${hint}`;
     let currentDate = new Date(weatherData["daily"]["time"][0]);
     const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][currentDate.getMonth()];
