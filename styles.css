@@ -7,6 +7,11 @@ body{
     background-repeat: repeat;
 }
 
+.wurdle-wrapper {
+    max-width: 100%; /* Make it responsive to the parent container */
+    margin: 0 auto;
+}
+
 .row {
     display: flex;
     justify-content: space-between;
@@ -58,8 +63,8 @@ p{
     display: inline-block;
     margin: 30px 2% 0 2%;
     margin-bottom: 20px;
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-left: 30px;
+    margin-right: 30px;
 }
 
 .weatherforcastbox img {
@@ -73,7 +78,7 @@ p{
     border-bottom: 1px solid #2f2f2f;
 }
 
-a {
+.weatherforcastbox a {
     color: inherit; /* Use the color from the parent element */
     text-decoration: none; /* Remove underline */
     border-bottom: 1px dotted;
@@ -81,6 +86,11 @@ a {
     font-size: 0.9rem;
     font-family: 'Playfair Display', sans-serif;
     box-sizing: border-box;
+}
+
+figure a {
+    color: inherit; /* Use the color from the parent element */
+    text-decoration: none; /* Remove underline */
 }
 
 .social {
@@ -324,18 +334,10 @@ h1 {
     font-size: 1.5em;
     font-weight: 700;
     margin: 3px;
-    height: 4rem;
+    max-height: 4rem; /* Limit the maximum height */
     width: 100%;
+    overflow: hidden; /* Hide overflow for small screens */
 }
-
-#word p {
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-}
-  
-#word p.show {
-   opacity: 1;
-}  
 
 #tiles {
     display: flex;
@@ -394,6 +396,13 @@ h1 {
     @media only all and (max-width: 900px) {
     .collumn{
         width: 47%;
+    }
+    .wurdle-wrapper {
+        width: 50%
+    }
+    .row-box {
+        width: 25px;
+        height: 25px
     }
 
 }

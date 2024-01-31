@@ -387,7 +387,6 @@ function checkGuess() {
     sameLetterIndexes = []
     var tempWordDict = {...wordLetterFreqDict};
     let tempWord = wordToGuess;
-    wordElement = document.getElementById("word")
     if (userCurrentWord == wordToGuess)
     {
         for (let i = 0; i < WORD_LENGTH; i++)
@@ -399,15 +398,8 @@ function checkGuess() {
         }
         let text = document.createElement("p")
         text.textContent = "Congratulations! The word was: " + wordToGuess.toUpperCase()
-        requestAnimationFrame(() => {
-            // Add the smooth transition class to show the text element smoothly
-            text.classList.add("show");
-          });
-      
-          // Use requestAnimationFrame to ensure smooth transition
-          requestAnimationFrame(() => {
-            wordElement.appendChild(text);
-          });
+        text.style.transition = "all 0.25s linear";
+        document.getElementById("word").appendChild(text);
         userWon = true
         userCurrentWord = ""
     }
@@ -452,15 +444,7 @@ function checkGuess() {
         {
             let text = document.createElement("p")
             text.textContent = "You lost! The word was: " + wordToGuess.toUpperCase()
-            requestAnimationFrame(() => {
-                // Add the smooth transition class to show the text element smoothly
-                text.classList.add("show");
-              });
-          
-              // Use requestAnimationFrame to ensure smooth transition
-              requestAnimationFrame(() => {
-                wordElement.appendChild(text);
-              });
+            document.getElementById("word").appendChild(text);
         }
     }
 }
